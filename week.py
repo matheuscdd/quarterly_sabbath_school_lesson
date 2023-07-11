@@ -1,11 +1,11 @@
 from day import day
-import requests 
+from navigator import browser
 from bs4 import BeautifulSoup as bs
 titles = {'inTro', 'inGest', 'inTerpret', 'inSpect', 'inVite', 'inSight', 'inQuire'}
 
 def week(url: str):
-    res = requests.get(url)
-    soup = bs(res.text, 'html.parser')
+    res = browser(url)
+    soup = bs(res, 'html.parser')
     results_raw, results_handle, results_text = soup.findAll('div', 'c-block'), [], []
     for el in results_raw:
         try: 
