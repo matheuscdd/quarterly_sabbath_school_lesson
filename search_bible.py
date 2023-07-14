@@ -20,7 +20,10 @@ def search_web(location: str):
     old_version = 'nlt'
     location = location.replace(old_version, new_version)
     res = requests.get(location)
-    soup = bs(res, 'html.parser')
-    ## continuar
+    soup = bs(res.text, 'html.parser')
+    verse = soup.findAll('div', class_='resourcetext')[0]\
+        .p.findAll('span')[1].text
+    return verse
+    
 
 

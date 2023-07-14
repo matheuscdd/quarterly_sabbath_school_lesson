@@ -1,5 +1,5 @@
 from bs4.element import Tag
-from search_bible import search_local
+from search_bible import search_local, search_web
 from file import save
 from requests import get
 
@@ -17,8 +17,12 @@ def day(content: Tag):
     
     verses = content.find_all('a', class_='rtBibleRef')
     if len(verses):
-
-    breakpoint()
+        for verse in verses:
+            # Talvez precise de algo depois para indicar o negrito pro word
+            verse.string += ' ' + search_web(verse['href'])
+            breakpoint()
+            break
+    # breakpoint()
     return content
 
 
