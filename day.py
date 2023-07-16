@@ -13,16 +13,13 @@ def day(content: Tag):
         week_passage_text = search_local(week_passage_indicative)
         # Talvez precise de algo depois para indicar o negrito pro word
         paragraph.string = f'{INDICATIVE_PASSAGE_DEFAULT}{week_passage_indicative}\n{week_passage_text}'
-        # breakpoint()
     
     verses = content.find_all('a', class_='rtBibleRef')
     if len(verses):
         for verse in verses:
             # Talvez precise de algo depois para indicar o negrito pro word
             verse.string += ' ' + search_web(verse['href'])
-            breakpoint()
-            break
-    # breakpoint()
+    save(content)
     return content
 
 
