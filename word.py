@@ -11,13 +11,25 @@ class Writer:
         self.doc.add_heading(title, 0)
     
     def add_intro(self, text: Tag):
-        pass
+        title = 'Introduction'
+        text = text.replace(title, '')
+        self.add_title(title, 18)
+        self.doc.add_paragraph(text)
+        self.doc.add_page_break()
+
+    def add_title(self, title: str, size: int):
+         paragraph = self.doc.add_paragraph()
+         run = paragraph.add_run(title)
+         run.font.size = Pt(size)
 
     def add_day(self, day: Tag):
-        # p = self.doc.add_paragraph()
         title = day.find_all(lambda tag: tag.name == 'strong' and tag.get_text() in titles)[0].text
-        self.doc.add_heading(title, 2)
-        day = day.text.replace(title, '')
+        self.add_title(title, 18)
+        day = day.text\
+            .replace(title, '')\
+            .replace('\n\n\n\n\n\n\n\n\n\n\n\n', '')\
+            .replace('\n\n\n\n\n\n', '')\
+            .replace('\n\n\n', '')
         texts = day.split(SBVC)
         for text in texts:
             if text[:2] == SBVS:
@@ -25,46 +37,20 @@ class Writer:
                 paragraph = self.doc.add_paragraph()
                 run = paragraph.add_run(text)
                 run.bold = True
+                run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
             else:
                 paragraph = self.doc.add_paragraph(text)
-
-        # breakpoint()
-        # separar os versos
-        # split loco
         self.doc.add_page_break()
 
     def add_week(self, week: list[Tag], title: str):
-        self.doc.add_heading(title, 1)
+        self.add_title(title.upper(), 24)
         for day in week:
             self.add_day(day)
 
-    def lesson(self, weeks):
+    def lesson(self, intro: str, weeks: list[Tag]):
+        self.add_intro(intro)
         for week in weeks:
             self.add_week(week['week'], week['title'])
         self.doc.save(self.title + '.docx')
 
     
-
-
-
-# Adiciona o título de acordo com seu nível
-
-
-# Adiciona paragráfo normal
-
-
-
-# run = p.add_run("Este é um texto estilizado")
-# run.bold = True
-# run.font.size = Pt(11)
-# run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
-
-# # quebra a página
-
-
-# # quando quebra a página precisa adicionar um outro parágrafo
-# p = doc.add_paragraph('Lorem lorem')
-
-# # p.add_run('This text is colorfull').color = 'red'
-
-# doc.save('text.docx')

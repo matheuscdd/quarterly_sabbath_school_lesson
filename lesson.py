@@ -1,24 +1,22 @@
 import os 
 from dotenv import load_dotenv
 from week import week
-from intro import get_title, get_lessons_numbers
+from intro import get_title, get_lessons_numbers, get_intro
 from word import Writer
 
 
-load_dotenv()
-def lesson(url: str):
+def lesson(url: str = input('Digite a url da lição do site inVerse: ').strip()):
     print('\033[33mSistema iniciando...\033[m')
     title = get_title(url)
     doc = Writer(title)
     max_lesson = get_lessons_numbers(url)
     endpoints = ['%02d' % el for el in range(1, max_lesson+1)]
-    results = []
+    weeks = []
     for endpoint in endpoints:
         res = week(url + endpoint)
-        results.append(res)
-        break
-    doc.lesson(results)
+        weeks.append(res)
+    intro = get_intro(url + 'intro')
+    doc.lesson(intro, weeks)
+    print('Sistema finalizado')
 
-lesson(
-    os.getenv('BASE_URL') or ''
-)
+lesson()

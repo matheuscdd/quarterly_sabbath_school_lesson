@@ -14,4 +14,12 @@ def get_lessons_numbers(url: str):
     lessons = soup.find_all(lambda tag: tag.name == 'a' and 'Week' in tag.get_text())
     return len(lessons)
 
-get_lessons_numbers('https://www.inversebible.org/lev')
+def get_intro(url: str):
+    res = get(url)
+    soup = bs(res.text, 'html.parser')
+    content = soup.findAll('div', 'u-padding--double--bottom')[0].text
+    return content
+
+
+
+

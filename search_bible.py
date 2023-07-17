@@ -21,10 +21,9 @@ def search_web(location: str):
     res = requests.get(location)
     soup = bs(res.text, 'html.parser')
     verse = soup\
-        .findAll('div', class_='resourcetext')[0]\
-        .findAll('p')[-1]\
-        .findAll('span')[-1].text
+        .findAll('div', class_='resourcetext')[0].text
     return set_container(verse)
+
     
 
 def set_container(text):
