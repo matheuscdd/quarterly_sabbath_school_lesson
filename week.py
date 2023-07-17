@@ -17,8 +17,8 @@ def week(url: str):
             pass
     for el in results_handle:
         results_text.append(day(el))
-        print('Dia finalizado')
-    print(f'Semana finalizada: {title}')
+        print('\033[34mDia finalizado\033[m')
+    print(f'\033[32mSemana finalizada: {title}\033[m')
     return {
         'title': title,
         'week': results_text

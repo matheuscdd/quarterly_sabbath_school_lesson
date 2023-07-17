@@ -3,9 +3,10 @@ from dotenv import load_dotenv
 from week import week
 from intro import get_title, get_lessons_numbers, get_intro
 from word import Writer
-
+from time import time
 
 def lesson(url: str = input('Digite a url da lição do site inVerse: ').strip()):
+    start = time()
     print('\033[33mSistema iniciando...\033[m')
     title = get_title(url)
     doc = Writer(title)
@@ -17,6 +18,8 @@ def lesson(url: str = input('Digite a url da lição do site inVerse: ').strip()
         weeks.append(res)
     intro = get_intro(url + 'intro')
     doc.lesson(intro, weeks)
-    print('Sistema finalizado')
+    print('\033[33mSistema finalizado')
+    end_time = time() - start
+    print(f'\033[37mTempo de execução {int(end_time/60)} minutos')
 
 lesson()
