@@ -29,7 +29,8 @@ class Writer:
             .replace(title, '')\
             .replace('\n\n\n\n\n\n\n\n\n\n\n\n', '')\
             .replace('\n\n\n\n\n\n', '')\
-            .replace('\n\n\n', '')
+            .replace('\n\n\n', '')\
+            .replace(' n ', '')
         texts = day.split(SBVC)
         for text in texts:
             if text[:2] == SBVS:
