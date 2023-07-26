@@ -1,5 +1,4 @@
 import os 
-from dotenv import load_dotenv
 from week import week
 from intro import get_title, get_lessons_numbers, get_intro
 from word import Writer
