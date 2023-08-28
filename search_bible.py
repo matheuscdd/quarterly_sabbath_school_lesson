@@ -10,7 +10,7 @@ def search_local(location: str):
     ids_ = bible.convert_references_to_verse_ids(reference)
     text = ''
     for id_ in ids_:
-        text += bible.get_verse_text(id_) 
+        text += ' ' + bible.get_verse_text(id_) 
     return set_container(text)
 
     
