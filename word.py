@@ -2,13 +2,18 @@ from docx import Document
 from docx.shared import RGBColor, Pt
 from common import SYMBOL_BIBLE_VERSE_CONTAINER as SBVC, SYMBOL_BIBLE_VERSE_START as SBVS, titles
 from bs4.element import Tag
-from file import save
 
 class Writer:
-    def __init__(self, title: str) -> None:
+    def __init__(self, title: str, intro, weeks) -> None:
         self.title = title
         self.doc = Document()
         self.doc.add_heading(title, 0)
+        self.add_intro(intro)
+        [
+            self.add_week(week['week'], week['title'])
+            for week in weeks
+        ]
+        self.doc.save(self.title + '.docx')
     
     def add_intro(self, text: Tag):
         title = 'Introduction'
@@ -46,12 +51,6 @@ class Writer:
     def add_week(self, week: list[Tag], title: str):
         self.add_title(title.upper(), 24)
         for day in week:
-            self.add_day(day)
-
-    def lesson(self, intro: str, weeks: list[Tag]):
-        self.add_intro(intro)
-        for week in weeks:
-            self.add_week(week['week'], week['title'])
-        self.doc.save(self.title + '.docx')
+            self.add_day(day)        
 
     
