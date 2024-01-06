@@ -1,10 +1,9 @@
-import os 
 from week import week
 from intro import get_title, get_lessons_numbers, get_intro
 from word import Writer
 from time import time
 
-def lesson(url: str = input('Digite a url da lição do site inVerse: ').strip()):
+def lesson(url):
     start = time()
     print('\033[33mSistema iniciando...\033[m')
     title = get_title(url)
@@ -20,5 +19,3 @@ def lesson(url: str = input('Digite a url da lição do site inVerse: ').strip()
     print('\033[33mSistema finalizado')
     end_time = time() - start
     print(f'\033[37mTempo de execução {int(end_time/60)} minutos')
-
-lesson()
