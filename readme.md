@@ -1,22 +1,20 @@
 # Instruções
-### Precisa instalar o chrome driver para executar Selenium
+### Precisa ter o Docker instalado
 
-### Criar ambiente virtual
+### Executa os containers
 ```
-python -m venv venv
-```
-
-### Ativando ambiente virtual
-```
-source venv/bin/activate
+docker compose up --build
 ```
 
-### Instalar pacotes
+### Acessar a rota
 ```
-pip install -r requirements.txt
+http://localhost:8000/lesson/
 ```
 
-### Executar o software
+### Fazer uma requisição json POST com o seguinte corpo
+Em que a url é a lição que você deseja baixar
 ```
-python lesson.py
+{
+	"url": "https://www.inversebible.org/rl"
+}
 ```

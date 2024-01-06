@@ -1,6 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from lesson import Lesson
+from traceback import print_exc
 
 
 class Server:
@@ -45,8 +46,12 @@ class Server:
             data = self._convert_request()
             is_valid = self.serializer(data)
             if is_valid:
-                # Lesson(data["url"])
-                self._return_response(201, data)
+                try:
+                    Lesson(data["url"])
+                    self._return_response(201, data)
+                except Exception as err:
+                    print_exc()
+                    self._return_response(500, {"msg": str(err)})
     
 
 if __name__ == "__main__":

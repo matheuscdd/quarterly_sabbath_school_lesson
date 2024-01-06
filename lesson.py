@@ -7,7 +7,7 @@ from selenium.webdriver import Remote
 import requests as req
 from bs4 import BeautifulSoup as bs
 from bs4.element import Tag
-from common import titles, SYMBOL_BIBLE_VERSE_CONTAINER as SBVC, SYMBOL_BIBLE_VERSE_START as SBVS
+from common import TITLES, SYMBOL_BIBLE_VERSE_CONTAINER as SBVC, SYMBOL_BIBLE_VERSE_START as SBVS
 
 
 class Browser:
@@ -47,8 +47,10 @@ class Bible:
         location = location.replace(OLD_VERSION, NEW_VERSION)
         res = req.get(location)
         soup = bs(res.text, 'html.parser')
-        verse = soup\
-            .findAll('div', class_='resourcetext')[0].text
+        verse = soup.findAll('div', class_='resourcetext')
+        if not verse:
+            return ""
+        verse = verse[0].text
         return cls.set_container(verse)
 
     @staticmethod
@@ -57,9 +59,8 @@ class Bible:
 
 
 class Lesson:
-    browser = Browser()
-
     def __init__(self, url):
+        self.browser = Browser()
         start = time()
         print('\033[33mSistema iniciando...\033[m')
         title = self.get_title(url)
@@ -69,7 +70,6 @@ class Lesson:
         weeks = []
         for endpoint in endpoints:
             weeks.append(self.week(url + endpoint))
-            print(endpoints)
         Writer(title, intro, weeks)
         self.browser.close()
         print('\033[33mSistema finalizado')
@@ -83,7 +83,7 @@ class Lesson:
         for el in results_raw:
             try: 
                 curr_title = el.h2.a.strong.text
-                if curr_title in titles:
+                if curr_title in TITLES:
                     results_handle.append(el)
             except (KeyError, AttributeError):
                 pass
@@ -96,7 +96,7 @@ class Lesson:
             'week': results_text
         }
     
-    def day(content: Tag):
+    def day(self, content: Tag):
         INDICATIVE_PASSAGE_DEFAULT = 'Read This Week’s Passage: '
         if INDICATIVE_PASSAGE_DEFAULT in content.text:
             element = content.find('div', class_='c-block__content')

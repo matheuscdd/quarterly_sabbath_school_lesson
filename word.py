@@ -1,6 +1,6 @@
 from docx import Document
 from docx.shared import RGBColor, Pt
-from common import SYMBOL_BIBLE_VERSE_CONTAINER as SBVC, SYMBOL_BIBLE_VERSE_START as SBVS, titles
+from common import SYMBOL_BIBLE_VERSE_CONTAINER as SBVC, SYMBOL_BIBLE_VERSE_START as SBVS, TITLES
 from bs4.element import Tag
 
 class Writer:
@@ -28,7 +28,7 @@ class Writer:
          run.font.size = Pt(size)
 
     def add_day(self, day: Tag):
-        title = day.find_all(lambda tag: tag.name == 'strong' and tag.get_text() in titles)[0].text
+        title = day.find_all(lambda tag: tag.name == 'strong' and tag.get_text() in TITLES)[0].text
         self.add_title(title, 18)
         day = day.text\
             .replace(title, '')\
