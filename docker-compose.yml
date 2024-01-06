@@ -1,6 +1,8 @@
 services:
   api:
     build: .
+    volumes:
+      - .:/code
     ports:
       - "8000:8000"
   chrome:
