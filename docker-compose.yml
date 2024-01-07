@@ -1,10 +1,17 @@
+version: '3'
 services:
   api:
-    build: .
+    image: python
+    working_dir: /app
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - "8000:8000"
+    command: 
+      - sh 
+      - -c 
+      - "pip install --no-cache-dir -r requirements.txt && \
+        python -u server.py"
   chrome:
     image: selenium/standalone-chrome
     ports:
