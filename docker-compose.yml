@@ -1,17 +1,26 @@
 version: '3'
 services:
   api:
-    image: python
+    image: python:3.12
     working_dir: /app
     volumes:
       - ./src:/app
     ports:
-      - "8000:8000"
+      - "${SERVER_PORT:-8000}:${SERVER_PORT:-8000}"
     command: 
       - sh 
       - -c 
       - "pip install --no-cache-dir -r requirements.txt && \
         python -u server.py"
+    env_file:
+      - .env
+    environment:
+      EMAIL_HOST_USER: "${EMAIL_HOST_USER}"
+      EMAIL_HOST_PASSWORD: "${EMAIL_HOST_PASSWORD}"
+      SMTP_SERVER: "${SMTP_SERVER}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SERVER_PORT: "${SERVER_PORT:-8000}"
+
   chrome:
     image: selenium/standalone-chrome
     ports:
