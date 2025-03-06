@@ -1,65 +1,56 @@
 import json
-from http.server import BaseHTTPRequestHandler, HTTPServer
 from lesson import Lesson
-from traceback import print_exc
-from console import Console
 from config import Config
 from threading import Thread
+from werkzeug.exceptions import HTTPException
+from flask import Flask, request, jsonify
+from models import Body
+from pydantic import ValidationError
 
 
 class Server:
     def __init__(self):
-        Console.log(
-            Console.blue, f"Server is running on http://localhost:{Config.SERVER_PORT}"
-        )
-        server = HTTPServer(("0.0.0.0", Config.SERVER_PORT), self.ServerHandler)
-        server.serve_forever()
+        self.app = Flask(__name__)
+        self._register_routes()
+        self._register_error_handlers()
+        self.app.run(host="0.0.0.0", port=Config.SERVER_PORT, debug=Config.DEBUG)
+    
+    def _register_routes(self):
+        self.app.add_url_rule("/lesson", "lesson", self.lesson, methods=["POST"])
 
-    class ServerHandler(BaseHTTPRequestHandler):
-        UTF_8 = "utf-8"
-        URL = "url"
-        EMAIL = "email"
-        MSG = "msg"
-        BASE_PATH = "/lesson/"
+    def _register_error_handlers(self):
+        @self.app.errorhandler(Exception)
+        def handle_exception(error):
+            if isinstance(error, HTTPException):
+                response = {"error": error.name, "message": error.description}
+                return jsonify(response), error.code
+            return (
+                jsonify(
+                    {
+                        "error": "Internal Server Error",
+                        "message": str(error) or "An unexpected error occurred",
+                    }
+                ),
+                500,
+            )
 
-        def _return_response(self, status: int = 200, data=None):
-            self.send_response(status)
-            self.send_header("Content-type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps(data).encode(self.UTF_8))
+    def lesson(self):
+        data = request.get_json()
+        errors, status_code = self.serializer(data)
+        if errors:
+            return errors, status_code
 
-        def _convert_request(self):
-            content_length = int(self.headers["Content-Length"])
-            read_data = self.rfile.read(content_length).decode(self.UTF_8)
-            data_handle = json.loads(read_data)
-            return data_handle
+        Thread(target=Lesson, args=[data["url"], data["email"]]).start()
+        return {"msg": "Track the request in the console"}, status_code
 
-        def serializer(self, data: dict):
-            REQUIRED_KEYS = [self.URL, self.EMAIL]
-            result = list(filter(lambda k: k not in REQUIRED_KEYS, data.keys()))
-            if len(result):
-                self._return_response(400, {self.MSG: "invalid body"})
-                return False
-            return True
-
-        def do_POST(self):
-            if self.BASE_PATH == self.path:
-                self.create()
-
-        def create(self):
-            data = self._convert_request()
-            is_valid = self.serializer(data)
-            if is_valid:
-                try:
-                    Thread(
-                        target=Lesson, args=[data[self.URL], data[self.EMAIL]]
-                    ).start()
-                    self._return_response(
-                        202, {"msg": "Track the request in the console"}
-                    )
-                except Exception as err:
-                    print_exc()
-                    self._return_response(500, {"msg": str(err)})
+    def serializer(self, data: dict) -> tuple[dict, int]:
+        try:
+            Body(**data).url_exists(data["url"])
+            return [], 202
+        except ValidationError as err:
+            return jsonify(err.errors()), 400
+        except ValueError as err:
+            return jsonify(json.loads(str(err))), 404
 
 
 if __name__ == "__main__":
