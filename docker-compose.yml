@@ -20,6 +20,7 @@ services:
       SMTP_SERVER: "${SMTP_SERVER}"
       SMTP_PORT: "${SMTP_PORT:-587}"
       SERVER_PORT: "${SERVER_PORT:-8000}"
+      DEBUG: "${DEBUG:-true}"
 
   chrome:
     image: selenium/standalone-chrome
