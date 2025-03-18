@@ -9,7 +9,7 @@ O gmail permite criar desde que adicione as duas etapas
 
 ### Precisa ter o Docker instalado
 
-### Executa os containers
+### Executa os containers 
 ```
 docker compose up --build
 ```
