@@ -1,0 +1,31 @@
+name: Testing Production
+
+on:
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+  test-production:
+    runs-on: ubuntu-latest
+    steps:  
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+         set -e
+         content="
+            SMTP_PORT='587'
+            SERVER_PORT='8000'
+            EMAIL_HOST_USER='test@test.com'
+            EMAIL_HOST_PASSWORD='test'
+            SMTP_SERVER='test'
+            DEBUG='true'
+          "
+          echo "$content" > .env
+
+      - name: Build docker compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: "./docker-compose.yml"
